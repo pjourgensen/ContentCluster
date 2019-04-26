@@ -9,16 +9,17 @@ import csv
 import json
 
 #load config
-import importlib.util
-spec = importlib.util.spec_from_file_location("genre_parse_config", "../config/genre_parse_config.py")
-foo = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(foo)
-c = foo.Config()
+csv_file_path = ""
+output_file_path = ""
+with open('../config/genre_parse_config.json') as json_file:  
+    data = json.load(json_file)
+    csv_file_path = data["csv"]
+    output_file_path = data["output"]
 
 genres = {}
 
 #read in CSV
-with open(c.csv_file_path, newline='', encoding='utf-8') as csvfile:
+with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
     reader = csv.reader(csvfile, delimiter=';', quotechar='\'')
     for row in reader:
         try:
@@ -39,5 +40,5 @@ o = []
 for key, value in genres.items():
     o.append(key)
     
-with open(c.output_file_path, 'w') as outfile:
+with open(output_file_path, 'w') as outfile:
     json.dump(o, outfile)
