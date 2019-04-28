@@ -42,3 +42,18 @@ if q1 == True:
     
     with open("genre_parse_config.json", 'w') as outfile:
         json.dump(o, outfile)
+        
+#movie_category.py
+q2 = get_bool("Would you like to generate a config file for movie_category.py (Y/N)? ")
+if q2 == True:
+    csv_path = get_file_path("Please enter the path to the .csv data file: ")
+    genre_path = get_file_path("Please enter a path for the genre .json file: ")
+    out_path = get_file_path("Please enter a path for the output .json file: ")
+    
+    o = {}
+    o["csv"] = csv_path
+    o["genre"] = genre_path
+    o["output"] = out_path
+    
+    with open("movie_category_config.json", 'w') as outfile:
+        json.dump(o, outfile)
