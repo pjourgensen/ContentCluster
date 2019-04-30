@@ -16,6 +16,15 @@ def get_bool (prompt):
             return t[input(prompt).lower()]
         except KeyError:
             print ("Invalid input! Please enter Y or N!")
+            
+#helper method to retrieve integer user input
+def get_int (prompt):
+    while True:
+        try:
+            check = input(prompt)
+            return int(check)
+        except Exception:
+            print ("Invalid input! Please enter an integer!")
 
 #helper method to retrieve Boolean user input
 def get_file_path (prompt):
@@ -28,6 +37,28 @@ def get_file_path (prompt):
             return path
         except KeyError:
             print ("Invalid input! Please enter a valid file path!")
+            
+#helper method to retrieve clustering algorithm
+def get_algorithm (prompt):
+    while True:
+        t = {"kmeans": True}
+        a = input(prompt).lower()
+        if a in t:
+            return (a, get_alg_options(a))
+        else:
+            print ("Invalid algorithm name!")
+        
+                
+#helper method to retrieve algorithm options
+def get_alg_options(alg_name):
+    output = {}
+    if alg_name == "kmeans":
+        output["minK"] = get_int("Please enter a minimum k value: ")
+        output["maxK"] = get_int("Please enter a maximum k value: ")
+        output["costFunc"] = input("Please enter the name of the cost function to use: ")
+        output["meanFunc"] = input("Please enter the name of the mean function to use: ")
+        output["errorFunc"] = input("Please enter the name of the error function to use: ")
+    return output
 
             
 #genre_parse.py
@@ -56,4 +87,18 @@ if q2 == True:
     o["output"] = out_path
     
     with open("movie_category_config.json", 'w') as outfile:
+        json.dump(o, outfile)
+        
+#movie_cluster.py
+q3 = get_bool("Would you like to generate a config file for movie_cluster.py (Y/N)? ")
+if q3 == True:
+    data_path = get_file_path("Please enter the path to the input .json data file: ")
+    alg = get_algorithm("Which clustering algorithm would you like to use: (kmeans)")
+    
+    o = {}
+    o["data_file_path"] = data_path
+    o["algorithm"] = alg[0]
+    o["alg_options"] = alg[1]
+    
+    with open("movie_cluster_config.json", 'w') as outfile:
         json.dump(o, outfile)
