@@ -61,5 +61,9 @@ with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
         except Exception as e:
             print (e)
     
+o = []
+for key, value in movies.items():
+    o.append({"id": key, "name": value["name"], "genres": value["genres"]})
+    
 with open(output_file_path, 'w') as outfile:
-    json.dump(movies, outfile)
+    json.dump(o, outfile)
