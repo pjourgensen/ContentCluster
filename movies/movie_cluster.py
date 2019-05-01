@@ -56,7 +56,7 @@ with open('../config/movie_category_config.json') as json_file:
     alg_options = data["alg_options"]
     
 #import kmeans library
-sys.path.insert(0, r'..\lib')
+sys.path.insert(0, r'..\utils')
 from kmeans import KMeans
 
 dataset = json.loads(data_file_path)
