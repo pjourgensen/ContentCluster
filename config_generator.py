@@ -57,3 +57,18 @@ if q2 == True:
     
     with open("movie_category_config.json", 'w') as outfile:
         json.dump(o, outfile)
+        
+#merge_movie_data.py
+q3 = get_bool("Would you like to generate a config file for merge_movie_data.py (Y/N)? ")
+if q3 == True:
+    csv_path_nf = get_file_path("Please enter the path to the .csv nf data file: ")
+    csv_path_mdb = get_file_path("Please enter a path for the .csv mdb data file: ")
+    out_path = get_file_path("Please enter a path for the output .csv file: ")
+    
+    o = {}
+    o["nf"] = csv_path_nf
+    o["mdb"] = csv_path_mdb
+    o["output"] = out_path
+    
+    with open("merge_movie_data_config.json", 'w') as outfile:
+        json.dump(o, outfile)
