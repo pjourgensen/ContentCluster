@@ -100,4 +100,4 @@ class KMeans:
             print (current_error)
                 
         #return all relevant data
-        return (current_error, self.groupings)
+        return (min_error, self.groupings)
