@@ -16,13 +16,13 @@ class KMeans:
         self.means = []
         self.groupings = {}
         for x in range(k):
-            self.groupings[k] = {"mean": None, "datapoints": [], "intra_error": None, "inter_error": None}
+            self.groupings[x] = {"mean": None, "datapoints": [], "intra_error": None, "inter_error": None}
         
     #generate initial set of means
     #use a pseudorandom number generator for assignment
     def _initial_partition(self):
         for datapoint in self.dataset:
-            assignment = random.randint(0, self.k)
+            assignment = random.randint(0, self.k - 1)
             self.groupings[assignment]["datapoints"].append(datapoint)
             
     #find closest mean to given datapoint
@@ -68,15 +68,16 @@ class KMeans:
         #initial with random partition
         current_error = None
         min_error = 0
-        _initial_partition()
+        self._initial_partition()
         for group, data in self.groupings.items():
-            _compute_group_mean(group)
-            _compute_group_error(group)
-            _compute_cross_cluster_error(group)
+            self._compute_group_mean(group)
+            self._compute_group_error(group)
+        for group, data in self.groupings.items():
+            self._compute_cross_cluster_error(group)
             min_error = min_error + self.error_func(self.groupings[group]["intra_error"], self.groupings[group]["inter_error"])
             
         #main loop
-        while (not current_error is None) or (current_error < min_error):
+        while (current_error is None) or (current_error < min_error):
             #update self.mean, grouping datapoints, and min_error
             min_error = current_error if not current_error is None else min_error
             self.means = []
@@ -86,15 +87,17 @@ class KMeans:
                 
             #map dataset into new groups
             for datapoint in self.dataset:
-                _find_best_grouping(datapoint)
+                self._find_best_grouping(datapoint)
                 
             #update grouping stats - mean, errors
             current_error = 0
             for group, data in self.groupings.items():
-                _compute_group_mean(group)
-                _compute_group_error(group)
-                _compute_cross_cluster_error(group)
+                self._compute_group_mean(group)
+                self._compute_group_error(group)
+            for group, data in self.groupings.items():
+                self._compute_cross_cluster_error(group)
                 current_error = current_error + self.error_func(self.groupings[group]["intra_error"], self.groupings[group]["inter_error"])
+            print (current_error)
                 
         #return all relevant data
         return (current_error, self.groupings)
