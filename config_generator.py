@@ -93,10 +93,12 @@ if q2 == True:
 q3 = get_bool("Would you like to generate a config file for movie_cluster.py (Y/N)? ")
 if q3 == True:
     data_path = get_file_path("Please enter the path to the input .json data file: ")
+    out_path = get_file_path("Please enter the path for the output results .json data file: ")
     alg = get_algorithm("Which clustering algorithm would you like to use: (kmeans)")
     
     o = {}
     o["data_file_path"] = data_path
+    o["output"] = out_path
     o["algorithm"] = alg[0]
     o["alg_options"] = alg[1]
     

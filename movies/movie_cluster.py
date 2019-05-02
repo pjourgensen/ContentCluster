@@ -7,8 +7,11 @@ Results can be fed into some visualization library
 import sys
 import json
 
-#Input functions for clustering algorithms
+### Input functions for clustering algorithms ###
 
+#### KMeans input functions ####
+
+#cost function => directly compare each genre bit
 def direct_compare(datapoint, mean):
     cost = 0
     for x in range(len(datapoint["genres"])):
@@ -16,12 +19,14 @@ def direct_compare(datapoint, mean):
             cost = cost + 1
     return cost
 
+#cost function => compute positive difference of each genre bit
 def direct_diff(datapoint, mean):
     cost = 0
     for x in range(len(datapoint["genres"])):
         cost = cost + (abs(datapoint["genres"][x] - mean[x]))
     return cost
 
+#mean function => simple arithmetic mean for each genre bit
 def arith_mean(datapoints, default_length=20):
     mean = []
     if len(datapoints) == 0:
@@ -37,21 +42,42 @@ def arith_mean(datapoints, default_length=20):
             mean.append(total / len(datapoints))
         return mean
     
+#error function => only consider error within each cluster
 def intra_error_only(intra_error, inter_error):
     return intra_error
 
+#error function => consider both error with each cluster and error across clusters
+#within => want to be small
+#across => want to be large
 def diff_error(intra_error, inter_error):
     return intra_error - inter_error
 
 func_list = {"directCompare": direct_compare, "directDiff": direct_diff, "arithMean": arith_mean, "intraErrorOnly": intra_error_only, "diffError": diff_error}
 
+### General Helper Methods
+
+#write formatted results of kmeans clustering analysis
+def write_kmeans_results(results, dataset_size, start_time, end_time, output_path):
+    output = {"dataset_size": dataset_size, "start_time": start_time, "end_time": end_time, "results": []}
+    for key,value in results.items():
+        tmp = {"kValue": key, "totalError": value[0], "groupings": []}
+        for k,v in value[1].items():
+            tmp["groupings"].append({"groupNumber": k, "mean": v["mean"], "intraError": v["intra_error"], "interError": v["inter_error"], "clusterSize": len(v["datapoints"])})
+        output["results"].append(tmp)
+    
+    with open(output_path, 'w') as outfile:
+        json.dump(output, outfile)
+    
+
 #load config
 data_file_path = ""
+output_path = ""
 algorithm = ""
 alg_options = {}
 with open('../config/movie_cluster_config.json') as json_file:  
     data = json.load(json_file)
     data_file_path = data["data_file_path"]
+    output_path = data["output"]
     algorithm = data["algorithm"]
     alg_options = data["alg_options"]
     
@@ -71,5 +97,6 @@ if algorithm == "kmeans":
     for k in range(alg_options["minK"], alg_options["maxK"] + 1):
         r = KMeans(dataset, k, cost_func, mean_func, error_func)
         results[k] = r.run()
+    write_kmeans_results(results, len(dataset), "", "", output_path)
 else:
     print ("The algorithm specified has not been implemented yet!")
