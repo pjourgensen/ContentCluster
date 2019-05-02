@@ -1,7 +1,7 @@
 import os
 import csv
 import json
-import pandas
+import pandas as pd
 
 #load config
 nf_file_path = ""
