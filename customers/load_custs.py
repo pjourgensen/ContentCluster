@@ -51,10 +51,10 @@ with open('../config/load_custs_config.json') as json_file:
 movie_ids = extract_movie_ids(merge_movie_path)
 
 cust_dict = {}
-cust_dict = read_netflix_data(cust_data1_path,cust_dict,movie_ids)
-cust_dict = read_netflix_data(cust_data2_path,cust_dict,movie_ids)
-cust_dict = read_netflix_data(cust_data3_path,cust_dict,movie_ids)
-cust_dict = read_netflix_data(cust_data4_path,cust_dict,movie_ids)
+cust_dict = read_nf_data(cust_data1_path,cust_dict,movie_ids)
+cust_dict = read_nf_data(cust_data2_path,cust_dict,movie_ids)
+cust_dict = read_nf_data(cust_data3_path,cust_dict,movie_ids)
+cust_dict = read_nf_data(cust_data4_path,cust_dict,movie_ids)
 
 with open(output_file_path,'w') as outfile:
     json.dump(cust_dict,outfile)
