@@ -39,12 +39,15 @@ def get_file_path (prompt):
             print ("Invalid input! Please enter a valid file path!")
             
 #helper method to retrieve clustering algorithm
-def get_algorithm (prompt):
+def get_algorithm (prompt, need_options=True):
     while True:
         t = {"kmeans": True}
         a = input(prompt).lower()
         if a in t:
-            return (a, get_alg_options(a))
+            if need_options == True:
+                return (a, get_alg_options(a))
+            else:
+                return (a, None)
         else:
             print ("Invalid algorithm name!")
         
@@ -94,7 +97,7 @@ q3 = get_bool("Would you like to generate a config file for movie_cluster.py (Y/
 if q3 == True:
     data_path = get_file_path("Please enter the path to the input .json data file: ")
     out_path = get_file_path("Please enter the path for the output results .json data file: ")
-    alg = get_algorithm("Which clustering algorithm would you like to use: (kmeans)")
+    alg = get_algorithm("Which clustering algorithm would you like to use (kmeans): ")
     
     o = {}
     o["data_file_path"] = data_path
@@ -103,8 +106,22 @@ if q3 == True:
     o["alg_options"] = alg[1]
     
     with open("movie_cluster_config.json", 'w') as outfile:
-        json.dump(o, outfile)        
-#merge_movie_data.py
+        json.dump(o, outfile)
+        
+#movie_summary.py
+q4 = get_bool("Would you like to generate a config file for movie_summary.py (Y/N)? ")
+if q4 == True:
+    data_path = get_file_path("Please enter the path to the results .json file: ")
+    genre_path = get_file_path("Please enter a path for the genre .json file: ")
+    alg = get_algorithm("Which clustering algorithm was used to generate these results (kmeans): ", False)
+    
+    o = {}
+    o["data_file_path"] = data_path
+    o["genre_file_path"] = genre_path
+    o["algorithm"] = alg[0]
+    
+    with open("movie_summary_config.json", 'w') as outfile:
+        json.dump(o, outfile)#merge_movie_data.py
 q3 = get_bool("Would you like to generate a config file for merge_movie_data.py (Y/N)? ")
 if q3 == True:
     csv_path_nf = get_file_path("Please enter the path to the .csv nf data file: ")
