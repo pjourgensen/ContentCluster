@@ -6,12 +6,13 @@ This script implements K-Means Clustering using generic cost functions
 import random
 
 class KMeans:
-    def __init__(self, dataset, k, cost_func, mean_func, error_func):
+    def __init__(self, dataset, k, cost_func, mean_func, error_func, compute_inter_error=True):
         self.dataset = dataset
         self.k = k
         self.cost_func = cost_func
         self.mean_func = mean_func
         self.error_func = error_func
+        self.compute_inter_error = compute_inter_error
         
         self.means = []
         self.groupings = {}
@@ -73,7 +74,8 @@ class KMeans:
             self._compute_group_mean(group)
             self._compute_group_error(group)
         for group, data in self.groupings.items():
-            self._compute_cross_cluster_error(group)
+            if self.compute_inter_error == True:
+                self._compute_cross_cluster_error(group)
             min_error = min_error + self.error_func(self.groupings[group]["intra_error"], self.groupings[group]["inter_error"])
             
         #main loop
@@ -95,7 +97,8 @@ class KMeans:
                 self._compute_group_mean(group)
                 self._compute_group_error(group)
             for group, data in self.groupings.items():
-                self._compute_cross_cluster_error(group)
+                if self.compute_inter_error == True:
+                    self._compute_cross_cluster_error(group)
                 current_error = current_error + self.error_func(self.groupings[group]["intra_error"], self.groupings[group]["inter_error"])
             print (current_error)
                 

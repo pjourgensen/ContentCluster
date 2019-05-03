@@ -6,6 +6,7 @@ Results can be fed into some visualization library
 #imports
 import sys
 import json
+import time
 
 ### Input functions for clustering algorithms ###
 
@@ -89,6 +90,8 @@ dataset = None
 with open(data_file_path) as json_file:
     dataset = json.load(json_file)
 
+start_time = time.time()
+    
 if algorithm == "kmeans":
     results = {}
     cost_func = func_list[alg_options["costFunc"]]
@@ -97,6 +100,8 @@ if algorithm == "kmeans":
     for k in range(alg_options["minK"], alg_options["maxK"] + 1):
         r = KMeans(dataset, k, cost_func, mean_func, error_func)
         results[k] = r.run()
-    write_kmeans_results(results, len(dataset), "", "", output_path)
+    
+    end_time = time.time()
+    write_kmeans_results(results, len(dataset), start_time, end_time, output_path)
 else:
     print ("The algorithm specified has not been implemented yet!")
