@@ -31,14 +31,33 @@ class KMeans:
     def _find_best_grouping(self, datapoint):
         min_cost = None
         min_mean = None
-        count = 0
+        mean_costs = []
         for mean in self.means:
-            tmp_cost = self.cost_func(datapoint, mean)
+            mean_costs.append(self.cost_func(datapoint, mean))
+        for index in range(len(mean_costs)):
+            tmp = None
+            if self.compute_inter_error == True:
+                tmp = self.__compute_two_costs(mean_costs, index)
+            else:
+                tmp = (mean_costs[index], None)
+            tmp_cost = self.error_func(tmp[0], tmp[1])
             if min_cost is None or tmp_cost < min_cost:
                 min_cost = tmp_cost
-                min_mean = count
-            count = count + 1
+                min_mean = index
         self.groupings[min_mean]["datapoints"].append(datapoint)
+        
+    #helper method to return a tuple of (intracost, intercost)
+    #where intracost is at the specified index
+    #intercost is the sum of the remaining indices
+    def __compute_two_costs(self, mean_costs, index):
+        intra = None
+        inter = 0
+        for x in range(len(mean_costs)):
+            if x == index:
+                intra = mean_costs[x]
+            else:
+                inter = inter + mean_costs[x]
+        return (intra, inter)
         
     #compute the mean for a given cluster assignment
     #just wraps user-provided mean computation function

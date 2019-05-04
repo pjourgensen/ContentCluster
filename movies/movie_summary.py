@@ -47,7 +47,7 @@ with open(genre_file_path) as json_file:
 if algorithm == "kmeans":
     lines = []
     lines.append("Number of datapoints analyzed: " + str(results["dataset_size"]))
-    lines.append("Total runtime: " + str((results["end_time"] - results["start_time"]) / 1000) + " seconds")
+    lines.append("Total runtime: " + str(results["end_time"] - results["start_time"]) + " seconds")
     lines.append(create_separator(True))
     for result in results["results"]:
         lines.append("K Value: " + str(result["kValue"]))

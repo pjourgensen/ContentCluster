@@ -25,6 +25,15 @@ def get_int (prompt):
             return int(check)
         except Exception:
             print ("Invalid input! Please enter an integer!")
+            
+#helper method to retrieve float user input
+def get_float (prompt):
+    while True:
+        try:
+            check = input(prompt)
+            return float(check)
+        except Exception:
+            print ("Invalid input! Please enter a number!")
 
 #helper method to retrieve Boolean user input
 def get_file_path (prompt):
@@ -61,6 +70,9 @@ def get_alg_options(alg_name):
         output["costFunc"] = input("Please enter the name of the cost function to use: ")
         output["meanFunc"] = input("Please enter the name of the mean function to use: ")
         output["errorFunc"] = input("Please enter the name of the error function to use: ")
+        if output["errorFunc"] == "diffError":
+            output["intraScale"] = get_float("Please enter a scale factor for within cluster error: ")
+            output["interScale"] = get_float("Please enter a scale factor for cross cluster error: ")
     return output
 
             
