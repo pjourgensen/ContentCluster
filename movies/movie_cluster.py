@@ -7,6 +7,7 @@ Results can be fed into some visualization library
 import sys
 import json
 import time
+from functools import partial
 
 ### Input functions for clustering algorithms ###
 
@@ -50,8 +51,8 @@ def intra_error_only(intra_error, inter_error):
 #error function => consider both error with each cluster and error across clusters
 #within => want to be small
 #across => want to be large
-def diff_error(intra_error, inter_error):
-    return intra_error - inter_error
+def diff_error(intra_scale, inter_scale, intra_error, inter_error):
+    return (intra_scale * intra_error) + (inter_scale * inter_error)
 
 func_list = {"directCompare": direct_compare, "directDiff": direct_diff, "arithMean": arith_mean, "intraErrorOnly": intra_error_only, "diffError": diff_error}
 
@@ -96,7 +97,15 @@ if algorithm == "kmeans":
     results = {}
     cost_func = func_list[alg_options["costFunc"]]
     mean_func = func_list[alg_options["meanFunc"]]
-    error_func = func_list[alg_options["errorFunc"]]
+    
+    error_func = None
+    if alg_options["errorFunc"] == "diffError":
+        intra_scale = alg_options["intraScale"] if "intraScale" in alg_options else 1
+        inter_scale = alg_options["interScale"] if "interScale" in alg_options else -1
+        error_func = partial(func_list[alg_options["errorFunc"]], intra_scale, inter_scale)
+    else:
+        error_func = func_list[alg_options["errorFunc"]]
+    
     for k in range(alg_options["minK"], alg_options["maxK"] + 1):
         r = KMeans(dataset, k, cost_func, mean_func, error_func)
         results[k] = r.run()
