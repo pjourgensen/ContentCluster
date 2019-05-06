@@ -28,10 +28,11 @@ class KMeans:
             
     #find closest mean to given datapoint
     #group that datapoint per the closest mean
-    def _find_best_grouping(self, datapoint):
+    def _find_best_grouping(self, datapoint, ind):
         min_cost = None
         min_mean = None
         mean_costs = []
+        ideal_size = ind / self.k
         for mean in self.means:
             mean_costs.append(self.cost_func(datapoint, mean))
         for index in range(len(mean_costs)):
@@ -40,7 +41,7 @@ class KMeans:
                 tmp = self.__compute_two_costs(mean_costs, index)
             else:
                 tmp = (mean_costs[index], None)
-            tmp_cost = self.error_func(tmp[0], tmp[1])
+            tmp_cost = self.error_func(tmp[0], tmp[1], (len(self.groupings[index]["datapoints"])+1, ideal_size))
             if min_cost is None or tmp_cost < min_cost:
                 min_cost = tmp_cost
                 min_mean = index
@@ -88,6 +89,7 @@ class KMeans:
         #initial with random partition
         current_error = None
         min_error = 0
+        ideal_size = len(self.dataset) / self.k
         self._initial_partition()
         for group, data in self.groupings.items():
             self._compute_group_mean(group)
@@ -95,7 +97,7 @@ class KMeans:
         for group, data in self.groupings.items():
             if self.compute_inter_error == True:
                 self._compute_cross_cluster_error(group)
-            min_error = min_error + self.error_func(self.groupings[group]["intra_error"], self.groupings[group]["inter_error"])
+            min_error = min_error + self.error_func(self.groupings[group]["intra_error"], self.groupings[group]["inter_error"], (len(self.groupings[group]["datapoints"]), ideal_size))
             
         #main loop
         while (current_error is None) or (current_error < min_error):
@@ -107,18 +109,20 @@ class KMeans:
                 self.groupings[group]["datapoints"] = []
                 
             #map dataset into new groups
+            process_count = 0
             for datapoint in self.dataset:
-                self._find_best_grouping(datapoint)
+                process_count = process_count + 1
+                self._find_best_grouping(datapoint, process_count)
                 
             #update grouping stats - mean, errors
             current_error = 0
             for group, data in self.groupings.items():
                 self._compute_group_mean(group)
                 self._compute_group_error(group)
-            for group, data in self.groupings.items():
+            for group, data in self.groupings.items(): 
                 if self.compute_inter_error == True:
                     self._compute_cross_cluster_error(group)
-                current_error = current_error + self.error_func(self.groupings[group]["intra_error"], self.groupings[group]["inter_error"])
+                current_error = current_error + self.error_func(self.groupings[group]["intra_error"], self.groupings[group]["inter_error"], (len(self.groupings[group]["datapoints"]), ideal_size))
             print (current_error)
                 
         #return all relevant data
