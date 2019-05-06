@@ -73,6 +73,8 @@ def get_alg_options(alg_name):
         if output["errorFunc"] == "diffError":
             output["intraScale"] = get_float("Please enter a scale factor for within cluster error: ")
             output["interScale"] = get_float("Please enter a scale factor for cross cluster error: ")
+        elif output["errorFunc"] == "clusterError":
+            output["clusterPenalty"] = get_float("Please enter a penalty factor for large/small clusters: ")
     return output
 
             

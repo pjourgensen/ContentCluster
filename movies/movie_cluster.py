@@ -45,16 +45,22 @@ def arith_mean(datapoints, default_length=20):
         return mean
     
 #error function => only consider error within each cluster
-def intra_error_only(intra_error, inter_error):
+def intra_error_only(intra_error, inter_error=None, cluster_info=None):
     return intra_error
 
 #error function => consider both error with each cluster and error across clusters
 #within => want to be small
 #across => want to be large
-def diff_error(intra_scale, inter_scale, intra_error, inter_error):
+def diff_error(intra_scale, inter_scale, intra_error, inter_error, cluster_info=None):
     return (intra_scale * intra_error) + (inter_scale * inter_error)
 
-func_list = {"directCompare": direct_compare, "directDiff": direct_diff, "arithMean": arith_mean, "intraErrorOnly": intra_error_only, "diffError": diff_error}
+#error function => consider both error within each cluster and cluster size
+#within => want to be small
+#size => want to be close to some ideal size
+def intra_cluster_size(penalty, intra_error, inter_error, cluster_info):
+    return intra_error + pow(cluster_info[0] - cluster_info[1], 2) * penalty
+
+func_list = {"directCompare": direct_compare, "directDiff": direct_diff, "arithMean": arith_mean, "intraErrorOnly": intra_error_only, "diffError": diff_error, "clusterError": intra_cluster_size}
 
 ### General Helper Methods
 
@@ -103,6 +109,9 @@ if algorithm == "kmeans":
         intra_scale = alg_options["intraScale"] if "intraScale" in alg_options else 1
         inter_scale = alg_options["interScale"] if "interScale" in alg_options else -1
         error_func = partial(func_list[alg_options["errorFunc"]], intra_scale, inter_scale)
+    elif alg_options["errorFunc"] == "clusterError":
+        penalty = alg_options["clusterPenalty"] if "clusterPenalty" in alg_options else 1
+        error_func = partial(func_list[alg_options["errorFunc"]], penalty)
     else:
         error_func = func_list[alg_options["errorFunc"]]
     
