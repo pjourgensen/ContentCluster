@@ -7,6 +7,7 @@ Results can be fed into some visualization library
 import sys
 import json
 import time
+import scipy.stats
 from functools import partial
 
 ### Input functions for clustering algorithms ###
@@ -58,9 +59,14 @@ def diff_error(intra_scale, inter_scale, intra_error, inter_error, cluster_info=
 #within => want to be small
 #size => want to be close to some ideal size
 def intra_cluster_size(penalty, intra_error, inter_error, cluster_info):
-    return intra_error + pow(cluster_info[0] - cluster_info[1], 2) * penalty
+    #prob = 1 / dist.pdf(cluster_info[0])
+    #return intra_error - prob * penalty
+    #return intra_error + pow(((cluster_info[1] - cluster_info[0]) / cluster_info[1]), 2) * penalty
+    return intra_error + (abs(cluster_info[0] - cluster_info[1]) / cluster_info[1]) * penalty
+    #return intra_error + pow(cluster_info[0] - cluster_info[1], 2) * penalty
 
 func_list = {"directCompare": direct_compare, "directDiff": direct_diff, "arithMean": arith_mean, "intraErrorOnly": intra_error_only, "diffError": diff_error, "clusterError": intra_cluster_size}
+dist = None
 
 ### General Helper Methods
 
@@ -116,6 +122,7 @@ if algorithm == "kmeans":
         error_func = func_list[alg_options["errorFunc"]]
     
     for k in range(alg_options["minK"], alg_options["maxK"] + 1):
+        dist = scipy.stats.norm((len(dataset) / k), ((k - 1)*pow(len(dataset), 2) / pow(k, 2)))
         r = KMeans(dataset, k, cost_func, mean_func, error_func)
         results[k] = r.run()
     
