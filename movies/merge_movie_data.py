@@ -44,5 +44,8 @@ for i in range(1,len(movies_df)):
         to_drop.append(i)
 movies_df.drop(to_drop,inplace=True)
 
+#Drop movies that don't have genre data
+movies_df.dropna(subset=['genres'],inplace=True)
+
 #Write to output file
 movies_df.to_csv(output_file_path, index=False, encoding="utf-8")
