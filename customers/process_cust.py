@@ -66,5 +66,9 @@ for i in cust_data.keys():
         gs = genre_dict[mids[j]]
         for k in gs:
             cust_df.loc[i,k] += rats[j]
+    cust_row = cust_df.loc[i,:]
+    max_score = max(cust_row)
+    min_score = min(cust_row)
+    cust_df.loc[i,:] = (cust_row - min_score) / (max_score - min_score)
 
-cust_df.to_csv(output_file_path, index=False, encoding="utf-8")
+cust_df.to_csv(output_file_path, index=True, encoding="utf-8")
