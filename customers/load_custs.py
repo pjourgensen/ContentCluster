@@ -56,5 +56,15 @@ cust_dict = read_nf_data(cust_data2_path,cust_dict,movie_ids)
 cust_dict = read_nf_data(cust_data3_path,cust_dict,movie_ids)
 cust_dict = read_nf_data(cust_data4_path,cust_dict,movie_ids)
 
+threshold = 50
+cd_keys = cust_dict.keys()
+for i in cd_keys:
+    if len(cust_dict[i]) < threshold:
+        try:
+            del cust_dict[i]
+        except KeyError:
+            print("Key does not exist")
+            
+
 with open(output_file_path,'w') as outfile:
     json.dump(cust_dict,outfile)
