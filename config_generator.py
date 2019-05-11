@@ -137,9 +137,11 @@ if q4 == True:
     o["algorithm"] = alg[0]
     
     with open("movie_summary_config.json", 'w') as outfile:
-        json.dump(o, outfile)#merge_movie_data.py
-q3 = get_bool("Would you like to generate a config file for merge_movie_data.py (Y/N)? ")
-if q3 == True:
+        json.dump(o, outfile)
+        
+#merge_movie_data.py
+q5 = get_bool("Would you like to generate a config file for merge_movie_data.py (Y/N)? ")
+if q5 == True:
     csv_path_nf = get_file_path("Please enter the path to the .csv nf data file: ")
     csv_path_mdb = get_file_path("Please enter a path for the .csv mdb data file: ")
     out_path = get_file_path("Please enter a path for the output .csv file: ")
@@ -153,8 +155,8 @@ if q3 == True:
         json.dump(o, outfile)
 
 #load_custs.py
-q4 = get_bool("Would you like to generate a config file for load_custs.py (Y/N)? ")
-if q4 == True:
+q6 = get_bool("Would you like to generate a config file for load_custs.py (Y/N)? ")
+if q6 == True:
     csv_path_merged = get_file_path("Please enter the path to the .csv merged data file: ")
     cust_data1_path = get_file_path("Please enter a path for the .txt data file: ")
     cust_data2_path = get_file_path("Please enter a path for the .txt data file: ")
