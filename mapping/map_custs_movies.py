@@ -33,16 +33,14 @@ def write_mapping_results(results, output_path):
 def evaluate_mapping(cust_cluster_result, movie_cluster_result):
     results = {"total_error": None, "mappings": {}}
     cust_count = 0
-    for cust_cluster in cust_cluster_result:
+    for cust_cluster in cust_cluster_result: #TODO: fix cust_cluster
         min_error = None
         best_mapping = None
-        movie_count = 0
-        for movie_cluster in movie_cluster_result:
-            cost = cost_func(cust_cluster, movie_cluster)
+        for movie_cluster in movie_cluster_result["groupings"]:
+            cost = cost_func(cust_cluster, movie_cluster["mean"]) #TODO: fix cust_cluster
             if (min_error is None) or (cost < min_error):
                 min_error = cost
-                best_mapping = movie_count
-            movie_count = movie_count + 1
+                best_mapping = movie_cluster["groupNumber"]
         results["total_error"] = results["total_error"] + min_cost
         results["mappings"][cust_count] = {"movie_cluster": best_mapping, "error": min_cost}
         cust_count = cust_count + 1
@@ -71,7 +69,7 @@ with open(customer_cluster_file_path) as json_file:
 movie_clusters = None
 with open(movie_cluster_file_path) as json_file:
     movie_clusters = json.load(json_file)
-    #TODO: extract array of cluster results
+    movie_clusters = movie_clusters["results"]
 
 cost_func = func_list[cost_func]
 #TODO: bind arguments as a partial based on cost function (from cost_func_options)
@@ -82,7 +80,7 @@ all_results = {}
 for cust_cluster_result in cust_clusters:
     for movie_cluster_result in movie_clusters:
         cost = evaluate_mapping(cust_cluster_result, movie_cluster_result)
-        m = None #TODO: set m to be some unique identifier of the given mapping test
+        m = "TODO" + ":" + movie_cluster_result["kValue"] #TODO: set m to be some unique identifier of the given mapping test
         if (min_err is None) or (cost["total_error"] < min_err):
             min_err = cost["total_error"]
             best_mapping = m
