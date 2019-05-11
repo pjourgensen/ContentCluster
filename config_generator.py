@@ -61,6 +61,19 @@ def get_algorithm (prompt, need_options=True):
                 return (a, None)
         else:
             print ("Invalid algorithm name!")
+            
+#helper method to retrieve mapping cost function
+def get_cost_function (prompt, need_options=True):
+    while True:
+        t = {}
+        a = input(prompt).lower()
+        if a in t:
+            if need_options == True:
+                return (a, get_alg_options(a))
+            else:
+                return (a, None)
+        else:
+            print ("Invalid cost function name!")
         
                 
 #helper method to retrieve algorithm options
@@ -173,4 +186,22 @@ if q6 == True:
     o["output"] = out_path
     
     with open("load_custs_config.json", 'w') as outfile:
+        json.dump(o, outfile)
+        
+#map_custs_movies.py
+q7 = get_bool("Would you like to generate a config file for map_custs_movies.py (Y/N)? ")
+if q7 == True:
+    cust_clusters = get_file_path("Please enter the path for the customer clustering results .json file: ")
+    movie_clusters = get_file_path("Please enter a path for the movie clustering results .json file: ")
+    cost_func = get_cost_function("Which cost function would you like to use? ")
+    out_path = get_file_path("Please enter a path for the output .json file: ")
+    
+    o = {}
+    o["customers"] = cust_clusters
+    o["movies"] = movie_clusters
+    o["costFunc"] = cost_func[0]
+    o["costFuncOpts"] = cost_func[1]
+    o["output"] = out_path
+    
+    with open("map_custs_movies_config.json", 'w') as outfile:
         json.dump(o, outfile)
