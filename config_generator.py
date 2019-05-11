@@ -42,7 +42,9 @@ def get_file_path (prompt):
             path = input(prompt)
             check = file_pattern.match(path)
             if check is None:
-                raise KeyError()
+                m = get_bool("The file path you have entered did not match the Windows file path regex. Is this OK? (Y/N) ")
+                if m == False:
+                    raise KeyError()
             return path
         except KeyError:
             print ("Invalid input! Please enter a valid file path!")
@@ -73,7 +75,7 @@ def get_alg_options(alg_name):
         if output["errorFunc"] == "diffError":
             output["intraScale"] = get_float("Please enter a scale factor for within cluster error: ")
             output["interScale"] = get_float("Please enter a scale factor for cross cluster error: ")
-        elif output["errorFunc"] == "clusterError":
+        elif "clusterError" in output["errorFunc"]:
             output["clusterPenalty"] = get_float("Please enter a penalty factor for large/small clusters: ")
     return output
 

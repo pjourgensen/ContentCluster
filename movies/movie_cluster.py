@@ -59,13 +59,17 @@ def diff_error(intra_scale, inter_scale, intra_error, inter_error, cluster_info=
 #within => want to be small
 #size => want to be close to some ideal size
 def intra_cluster_size(penalty, intra_error, inter_error, cluster_info):
-    #prob = 1 / dist.pdf(cluster_info[0])
-    #return intra_error - prob * penalty
-    #return intra_error + pow(((cluster_info[1] - cluster_info[0]) / cluster_info[1]), 2) * penalty
     return intra_error + (abs(cluster_info[0] - cluster_info[1]) / cluster_info[1]) * penalty
-    #return intra_error + pow(cluster_info[0] - cluster_info[1], 2) * penalty
+    
+#error function => consider both error within each cluster and cluster size
+#within => want to be small
+#size => want to be close to some ideal size
+#penalty is relative to Gaussian distribution around ideal size and variance
+def prob_intra_cluster_size(penaly, intra_error, inter_error, cluster_info):
+    prob = 1 / dist.pdf(cluster_info[0])
+    return intra_error - prob * penalty
 
-func_list = {"directCompare": direct_compare, "directDiff": direct_diff, "arithMean": arith_mean, "intraErrorOnly": intra_error_only, "diffError": diff_error, "clusterError": intra_cluster_size}
+func_list = {"directCompare": direct_compare, "directDiff": direct_diff, "arithMean": arith_mean, "intraErrorOnly": intra_error_only, "diffError": diff_error, "clusterError": intra_cluster_size, "probClusterError": prob_intra_cluster_size}
 dist = None
 
 ### General Helper Methods
@@ -115,14 +119,15 @@ if algorithm == "kmeans":
         intra_scale = alg_options["intraScale"] if "intraScale" in alg_options else 1
         inter_scale = alg_options["interScale"] if "interScale" in alg_options else -1
         error_func = partial(func_list[alg_options["errorFunc"]], intra_scale, inter_scale)
-    elif alg_options["errorFunc"] == "clusterError":
+    elif "clusterError" in alg_options["errorFunc"]:
         penalty = alg_options["clusterPenalty"] if "clusterPenalty" in alg_options else 1
         error_func = partial(func_list[alg_options["errorFunc"]], penalty)
     else:
         error_func = func_list[alg_options["errorFunc"]]
     
     for k in range(alg_options["minK"], alg_options["maxK"] + 1):
-        dist = scipy.stats.norm((len(dataset) / k), ((k - 1)*pow(len(dataset), 2) / pow(k, 2)))
+        if error_func == prob_intra_cluster_size:
+            dist = scipy.stats.norm((len(dataset) / k), ((k - 1)*pow(len(dataset), 2) / pow(k, 2))) #mean = n/k, variance = (k-1)^2n^2 / k^2
         r = KMeans(dataset, k, cost_func, mean_func, error_func)
         results[k] = r.run()
     
