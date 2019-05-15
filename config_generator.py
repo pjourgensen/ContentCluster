@@ -174,3 +174,20 @@ if q6 == True:
     
     with open("load_custs_config.json", 'w') as outfile:
         json.dump(o, outfile)
+        
+#process_custs.py
+q7 = get_bool("Would you like to generate a config file for process_custs.py (Y/N)? ")
+if q7 == True:
+    csv_path_merged = get_file_path("Please enter the path to the .csv merged data file: ")
+    cust_data_path = get_file_path("Please enter a path for the .json data file: ")
+    genre_order_path = get_file_path("Please enter a path for the .json genre order data file: ")
+    out_path = get_file_path("Please enter a path for the output .csv file: ")
+
+    o = {}
+    o["mi"] = csv_path_merged
+    o["cd"] = cust_data_path
+    o["go"] = genre_order_path
+    o["out"] = out_path
+
+    with open("process_custs_config.json", 'w') as outfile:
+        json.dump(o, outfile)
