@@ -30,7 +30,7 @@ movie_info_file_path = ""
 cust_data_file_path = ""
 genre_order_file_path = ""
 output_file_path = ""
-with open('../config/process_cust_config.json') as json_file:
+with open('../config/process_custs_config.json') as json_file:
     data = json.load(json_file)
     movie_info_file_path = data["mi"]
     cust_data_file_path = data["cd"]
