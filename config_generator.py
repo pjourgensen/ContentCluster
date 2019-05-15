@@ -191,3 +191,19 @@ if q7 == True:
 
     with open("process_custs_config.json", 'w') as outfile:
         json.dump(o, outfile)
+
+#cluster.py
+q8 = get_bool("Would you like to generate a config file for cluster.py (Y/N)? ")
+if q8 == True:
+    data_path = get_file_path("Please enter the path to the input .json data file: ")
+    out_path = get_file_path("Please enter the path for the output results .json data file: ")
+    alg = get_algorithm("Which clustering algorithm would you like to use (kmeans): ")
+    
+    o = {}
+    o["data_file_path"] = data_path
+    o["output"] = out_path
+    o["algorithm"] = alg[0]
+    o["alg_options"] = alg[1]
+    
+    with open("cluster_config.json", 'w') as outfile:
+        json.dump(o, outfile)
