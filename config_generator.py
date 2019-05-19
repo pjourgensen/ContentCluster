@@ -65,7 +65,7 @@ def get_algorithm (prompt, need_options=True):
 #helper method to retrieve mapping cost function
 def get_cost_function (prompt, need_options=True):
     while True:
-        t = {}
+        t = {"directdiff": True}
         a = input(prompt).lower()
         if a in t:
             if need_options == True:
@@ -90,6 +90,8 @@ def get_alg_options(alg_name):
             output["interScale"] = get_float("Please enter a scale factor for cross cluster error: ")
         elif "clusterError" in output["errorFunc"]:
             output["clusterPenalty"] = get_float("Please enter a penalty factor for large/small clusters: ")
+    elif alg_name == "directdiff":
+        output["scale"] = get_float("Please enter a scale factor for mapping error: ")
     return output
 
             
@@ -193,7 +195,7 @@ q7 = get_bool("Would you like to generate a config file for map_custs_movies.py 
 if q7 == True:
     cust_clusters = get_file_path("Please enter the path for the customer clustering results .json file: ")
     movie_clusters = get_file_path("Please enter a path for the movie clustering results .json file: ")
-    cost_func = get_cost_function("Which cost function would you like to use? ")
+    cost_func = get_cost_function("Which cost function would you like to use? ", True)
     out_path = get_file_path("Please enter a path for the output .json file: ")
     
     o = {}
