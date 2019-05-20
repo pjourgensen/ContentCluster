@@ -207,3 +207,21 @@ if q7 == True:
     
     with open("map_custs_movies_config.json", 'w') as outfile:
         json.dump(o, outfile)
+        
+#cluster_results_merge.py
+q8 = get_bool("Would you like to generate a config file for cluster_results_merge.py (Y/N)? ")
+if q8 == True:
+    result_files = []
+    c = True
+    while c == True:
+        r = get_file_path("Please enter the path for a clustering result .json file to merge: ")
+        result_files.append(r)
+        c = get_bool("Would you like to merge another result (Y/N)? ")
+    out_path = get_file_path("Please enter a path for the output .json file: ")
+    
+    o = {}
+    o["resultFiles"] = result_files
+    o["output"] = out_path
+    
+    with open("cluster_results_merge_config.json", 'w') as outfile:
+        json.dump(o, outfile)
