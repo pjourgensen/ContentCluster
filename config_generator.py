@@ -225,3 +225,14 @@ if q8 == True:
     
     with open("cluster_results_merge_config.json", 'w') as outfile:
         json.dump(o, outfile)
+        
+#mapping_summary.py
+q9 = get_bool("Would you like to generate a config file for mapping_summary.py (Y/N)? ")
+if q9 == True:
+    result = get_file_path("Please enter the path for the mapping result .json file: ")
+    
+    o = {}
+    o["resultFile"] = result
+    
+    with open("mapping_summary_config.json", 'w') as outfile:
+        json.dump(o, outfile)
