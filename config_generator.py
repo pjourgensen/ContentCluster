@@ -61,6 +61,19 @@ def get_algorithm (prompt, need_options=True):
                 return (a, None)
         else:
             print ("Invalid algorithm name!")
+            
+#helper method to retrieve mapping cost function
+def get_cost_function (prompt, need_options=True):
+    while True:
+        t = {"directdiff": True}
+        a = input(prompt).lower()
+        if a in t:
+            if need_options == True:
+                return (a, get_alg_options(a))
+            else:
+                return (a, None)
+        else:
+            print ("Invalid cost function name!")
         
                 
 #helper method to retrieve algorithm options
@@ -77,6 +90,8 @@ def get_alg_options(alg_name):
             output["interScale"] = get_float("Please enter a scale factor for cross cluster error: ")
         elif "clusterError" in output["errorFunc"]:
             output["clusterPenalty"] = get_float("Please enter a penalty factor for large/small clusters: ")
+    elif alg_name == "directdiff":
+        output["scale"] = get_float("Please enter a scale factor for mapping error: ")
     return output
 
             
@@ -173,4 +188,51 @@ if q6 == True:
     o["output"] = out_path
     
     with open("load_custs_config.json", 'w') as outfile:
+        json.dump(o, outfile)
+        
+#map_custs_movies.py
+q7 = get_bool("Would you like to generate a config file for map_custs_movies.py (Y/N)? ")
+if q7 == True:
+    cust_clusters = get_file_path("Please enter the path for the customer clustering results .json file: ")
+    movie_clusters = get_file_path("Please enter a path for the movie clustering results .json file: ")
+    cost_func = get_cost_function("Which cost function would you like to use? ", True)
+    out_path = get_file_path("Please enter a path for the output .json file: ")
+    
+    o = {}
+    o["customers"] = cust_clusters
+    o["movies"] = movie_clusters
+    o["costFunc"] = cost_func[0]
+    o["costFuncOpts"] = cost_func[1]
+    o["output"] = out_path
+    
+    with open("map_custs_movies_config.json", 'w') as outfile:
+        json.dump(o, outfile)
+        
+#cluster_results_merge.py
+q8 = get_bool("Would you like to generate a config file for cluster_results_merge.py (Y/N)? ")
+if q8 == True:
+    result_files = []
+    c = True
+    while c == True:
+        r = get_file_path("Please enter the path for a clustering result .json file to merge: ")
+        result_files.append(r)
+        c = get_bool("Would you like to merge another result (Y/N)? ")
+    out_path = get_file_path("Please enter a path for the output .json file: ")
+    
+    o = {}
+    o["resultFiles"] = result_files
+    o["output"] = out_path
+    
+    with open("cluster_results_merge_config.json", 'w') as outfile:
+        json.dump(o, outfile)
+        
+#mapping_summary.py
+q9 = get_bool("Would you like to generate a config file for mapping_summary.py (Y/N)? ")
+if q9 == True:
+    result = get_file_path("Please enter the path for the mapping result .json file: ")
+    
+    o = {}
+    o["resultFile"] = result
+    
+    with open("mapping_summary_config.json", 'w') as outfile:
         json.dump(o, outfile)
